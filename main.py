@@ -1,4 +1,4 @@
-from flask import Flask, request, url_for
+from flask import Flask, request, url_for, render_template
 import models
 import urllib, json
 app = Flask(__name__)
@@ -6,22 +6,22 @@ app = Flask(__name__)
 @app.route('/')
 def hello_person():
     return """
-        <p>Who do you want me to say "Hi" to?</p>
+        <p>What subreddit do you want to analyze?</p>
         <form method="POST" action="%s"><input name="subreddit" /><input type="submit" value="Go!" /></form>
         """ % (url_for('greet'),)
 
+#TODO: error handling for nonexistent subreddit
 @app.route('/greet', methods=['POST'])
 def greet():
-    greeting = models.pullStats(request.form["subreddit"])
-    # url = "https://www.reddit.com/r/personalfinance/about/traffic.json"
-    # response = urllib.urlopen(url)
-    # data = json.loads(response.read())
-    # data = json.dumps(data)
-    return """
-        <p>%s</p>
-        <p><a href="%s">Back to start</a></p>
-        """ % (greeting, url_for('hello_person'))
+    subreddit_data = models.pull_stats(request.form["subreddit"])
+    daychart_info = models.day_stats(subreddit_data["day"])
+    # return """
+    #     <p>%s</p>
+    #     <p><a href="%s">Back to start</a></p>
+    #     """ % (greeting, url_for('hello_person'))
+    return render_template('results.html', daychartInfo=daychart_info)
 
+#TODO: remove app.debug?
 if __name__ == '__main__':
     app.debug = True
     app.run()

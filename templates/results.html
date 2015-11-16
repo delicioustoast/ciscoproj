@@ -1,0 +1,52 @@
+<!doctype html>
+<title>Hello from Flask</title>
+{% if name %}
+  <h1>Hello {{ name }}!</h1>
+{% else %}
+  <h1>Hello World!</h1>
+{% endif %}
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    var daychartInfo = JSON.parse('{{ daychartInfo|tojson }}');
+    google.load('visualization', '1', {packages: ['corechart', 'bar']});
+	google.setOnLoadCallback(drawBasic);
+
+	function drawBasic() {
+
+	      var data = new google.visualization.DataTable();
+	      data.addColumn('string', 'Day');
+	      data.addColumn('number', 'Page views');
+
+	      data.addRows([
+	        ['Sunday', daychartInfo['Sunday']],
+	        ['Monday', daychartInfo['Monday']],
+	        ['Tuesday', daychartInfo['Tuesday']],
+	        ['Wednesday', daychartInfo['Wednesday']],
+	        ['Thursday', daychartInfo['Thursday']],
+	        ['Friday', daychartInfo['Friday']],
+	        ['Saturday', daychartInfo['Saturday']],
+	      ]);
+
+	      var options = {
+	        title: 'Subreddit Activity by Day',
+	        hAxis: {
+	          title: 'Day of week',
+	        },
+	        vAxis: {
+	          title: 'Page views'
+	        }
+	      };
+
+	      var chart = new google.visualization.ColumnChart(
+	        document.getElementById('chart_div'));
+
+	      chart.draw(data, options);
+	    }
+    </script>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
