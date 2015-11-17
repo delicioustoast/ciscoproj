@@ -1,7 +1,7 @@
 <!doctype html>
-<title>Hello from Flask</title>
-{% if name %}
-  <h1>Hello {{ name }}!</h1>
+<title>Subreddit results</title>
+{% if subreddit %}
+  <h1>Results for /r/{{ subreddit }}</h1>
 {% else %}
   <h1>Hello World!</h1>
 {% endif %}
@@ -10,10 +10,11 @@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
     var daychartInfo = JSON.parse('{{ daychartInfo|tojson }}');
+    var hourchartInfo = JSON.parse('{{ hourchartInfo|tojson }}');
     google.load('visualization', '1', {packages: ['corechart', 'bar']});
-	google.setOnLoadCallback(drawBasic);
+	google.setOnLoadCallback(drawCharts);
 
-	function drawBasic() {
+	function drawCharts() {
 
 	      var data = new google.visualization.DataTable();
 	      data.addColumn('string', 'Day');
@@ -39,14 +40,43 @@
 	        }
 	      };
 
-	      var chart = new google.visualization.ColumnChart(
-	        document.getElementById('chart_div'));
+	      var data2 = new google.visualization.DataTable();
+	      data2.addColumn('timeofday', 'Time of Day');
+	      data2.addColumn('number', 'Page views');
 
+	      for (var key in hourchartInfo) {
+	      	if (hourchartInfo.hasOwnProperty(key)) {
+	      		data2.addRow([[Number(key), 0, 0], hourchartInfo[key]]);
+	      	}
+	      }
+
+	      var options2 = {
+	        title: 'Subreddit Activity by Hour',
+	        hAxis: {
+	          title: 'Time of Day (GMT)',
+	          format: 'h:mm a',
+	          viewWindow: {
+	            min: [0, -30, 0],
+	            max: [23, 30, 0]
+	          }
+	        },
+	        vAxis: {
+	          title: 'Page views'
+	        }
+	      };
+
+	      var chart = new google.visualization.ColumnChart(
+	        document.getElementById('daychart_div'));
 	      chart.draw(data, options);
+
+	      var chart2 = new google.visualization.ColumnChart(
+	        document.getElementById('hourchart_div'));
+	      chart2.draw(data2, options2);
 	    }
     </script>
   </head>
   <body>
-    <div id="chart_div"></div>
+    <div id="daychart_div"></div>
+    <div id="hourchart_div"></div>
   </body>
 </html>
