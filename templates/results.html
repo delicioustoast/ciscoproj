@@ -1,13 +1,69 @@
 <!doctype html>
-<title>Subreddit results</title>
-{% if subreddit %}
-  <h1>Results for /r/{{ subreddit }}</h1>
-{% else %}
-  <h1>Hello World!</h1>
-{% endif %}
+<title>Subreddit Analysis</title>
+
 <html>
   <head>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+
+  </head>
+  <body class="container">
+  	{% if error %}
+	<div class="alert alert-danger" role="alert">
+	  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+	  <span class="sr-only">Error:</span>
+	  {{ error }}
+	</div>
+	{% endif %}
+
+
+  	<div class="row">
+  		<div class="col-md-9">
+		{% if subreddit %}
+		  <h1>Results for /r/{{ subreddit }}</h1>
+		{% else %}
+		  <h1>Subreddit Activity Analysis</h1>
+		{% endif %}
+
+		<p>What subreddit do you want to analyze?</p>
+    	<form method="POST" action="/analysis">/r/<input name="subreddit" value="{{ subreddit }}" /><input type="submit" value="Go!" /></form>
+
+    	{% if showGraph %}
+	    	<hr>
+			<div id="daychart_div"></div>
+		    <div id="hourchart_div"></div>
+		    <hr>
+		    <h3>Best day to post: {{ bestDay }}</h3>
+		    <h3>Best hour to post: {{ bestHour }}</h3>
+		{% endif %}
+	    </div>
+
+		{% if topSubreddits %}
+			<div class="col-md-3">
+			<h3>Most Popular Subreddits:</h3>
+			<ol>
+				{% for subreddit in topSubreddits %}
+					<li style="width:100px;"><a href="https://www.reddit.com/r/{{ subreddit }}"><h4>{{ subreddit }}</h4></a></li>
+				{% endfor %}
+			</ol>
+			</div>
+		{% endif %}
+
+
+
+	</div>
+
+
+
+  </body>
+  {% if showGraph %}
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
     var daychartInfo = JSON.parse('{{ daychartInfo|tojson }}');
     var hourchartInfo = JSON.parse('{{ hourchartInfo|tojson }}');
@@ -37,7 +93,8 @@
 	        },
 	        vAxis: {
 	          title: 'Page views'
-	        }
+	        },
+	        legend: {position: 'none'}
 	      };
 
 	      var data2 = new google.visualization.DataTable();
@@ -53,7 +110,7 @@
 	      var options2 = {
 	        title: 'Subreddit Activity by Hour',
 	        hAxis: {
-	          title: 'Time of Day (GMT)',
+	          title: 'Time of Day (PST)',
 	          format: 'h:mm a',
 	          viewWindow: {
 	            min: [0, -30, 0],
@@ -62,7 +119,8 @@
 	        },
 	        vAxis: {
 	          title: 'Page views'
-	        }
+	        },
+	        legend: {position: 'none'}
 	      };
 
 	      var chart = new google.visualization.ColumnChart(
@@ -74,9 +132,5 @@
 	      chart2.draw(data2, options2);
 	    }
     </script>
-  </head>
-  <body>
-    <div id="daychart_div"></div>
-    <div id="hourchart_div"></div>
-  </body>
+    {% endif %}
 </html>
