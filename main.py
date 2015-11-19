@@ -28,9 +28,15 @@ def analysis():
     best_hour = datetime.strptime(best_hour, "%H").strftime("%I %p")
 
     top_subreddits = models.get_top_subreddits(10)
+
+    should_analyze_words = request.form.getlist('check') 
+    top_words = None
+    if should_analyze_words:
+        top_words = models.get_top_words(request.form["subreddit"], 10)
+
     return render_template('results.html', subreddit=request.form["subreddit"], 
         daychartInfo=daychart_info, hourchartInfo=hourchart_info, bestDay=best_day, bestHour=best_hour, showGraph=True,
-        topSubreddits=top_subreddits)
+        topSubreddits=top_subreddits, topWords=top_words)
 
 #TODO: remove app.debug?
 #TODO: add readme

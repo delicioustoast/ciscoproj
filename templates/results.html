@@ -32,7 +32,7 @@
 		{% endif %}
 
 		<p>What subreddit do you want to analyze?</p>
-    	<form method="POST" action="/analysis">/r/<input name="subreddit" value="{{ subreddit }}" /><input type="submit" value="Go!" /></form>
+    	<form method="POST" action="/analysis">/r/<input name="subreddit" value="{{ subreddit }}" /><input type="submit" value="Go!" /><input type="checkbox" name="check"/> Get words found in "positive" posts (takes a while)</form>
 
     	{% if showGraph %}
 	    	<hr>
@@ -54,10 +54,18 @@
 			</ol>
 			</div>
 		{% endif %}
-
-
-
 	</div>
+
+	{% if topWords %}
+	    <div>
+	    	<h3>Most used words in upvoted posts:</h3>
+	    	<ol>
+	    	{% for word, score in topWords %}
+				<li style="width:100px;"><h4>{{ word }}</h4></li>
+			{% endfor %}
+			</ol>
+	    </div>
+	{% endif %}
 
 
 
