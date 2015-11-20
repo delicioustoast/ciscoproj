@@ -32,7 +32,7 @@ def analysis():
     should_analyze_words = request.form.getlist('check') 
     top_words = None
     if should_analyze_words:
-        top_words = models.get_top_words(request.form["subreddit"], 10)
+        top_words = models.get_top_words(request.form["subreddit"], 5)
 
     return render_template('results.html', subreddit=request.form["subreddit"], 
         daychartInfo=daychart_info, hourchartInfo=hourchart_info, bestDay=best_day, bestHour=best_hour, showGraph=True,
