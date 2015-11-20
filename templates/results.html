@@ -13,7 +13,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
 
   </head>
-  <body class="container">
+  <body class="container" style="margin-top:20px;min-width:825px;">
   	{% if error %}
 	<div class="alert alert-danger" role="alert">
 	  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -24,49 +24,83 @@
 
 
   	<div class="row">
-  		<div class="col-md-9">
+  		<div class="col-md-9" style=="background-color:gray;">
+  		<div class="panel panel-default">
+  			<div class="panel-heading">
+  			
 		{% if subreddit %}
-		  <h1>Results for /r/{{ subreddit }}</h1>
+		  <h3 class="panel-title">Subreddit Analysis for /r/{{ subreddit }}</h3>
 		{% else %}
-		  <h1>Subreddit Activity Analysis</h1>
+		  <h3 class="panel-title">Subreddit Activity Analysis</h3>
 		{% endif %}
+			</div>
 
-		<p>What subreddit do you want to analyze?</p>
-    	<form method="POST" action="/analysis">/r/<input name="subreddit" value="{{ subreddit }}" /><input type="submit" value="Go!" /><br>
-    	<input type="checkbox" name="check"/> Get words found in "positive" posts (takes a while)
+			<div class="panel-body">
+
+		<p>Which subreddit do you want to analyze?</p>
+    	<form method="POST" action="/analysis">/r/<input name="subreddit" value="{{ subreddit }}" class="form-control" style="max-width:200px;display:inline;margin-left:10px;"/><input type="submit" value="Search" class="btn btn-sm btn-primary" style="margin-left:10px;border:0px;" /><br>
+    	<input type="checkbox" name="check" style="margin-top:15px;"/> Get words found in "positive" posts (takes a while)
     	</form>
 
-    	{% if showGraph %}
-	    	<hr>
+    </div>
+    </div>
+	{% if showGraph %}
+    	<div class="panel panel-default">
+  			<div class="panel-heading">
+				<h3 class="panel-title">Subreddit Activity</h3>
+			</div>
+			<div class="panel-body">
+
+    	
 			<div id="daychart_div"></div>
 		    <div id="hourchart_div"></div>
 		    <hr>
-		    <h3>Best day to post: {{ bestDay }}</h3>
-		    <h3>Best hour to post: {{ bestHour }}</h3>
-		{% endif %}
+		    <h5>Best day to post: {{ bestDay }}</h5>
+		    <h5>Best hour to post: {{ bestHour }}</h5>
+		
+	</div>
+	</div>
+	{% endif %}
 	    </div>
 
 		{% if topSubreddits %}
 			<div class="col-md-3">
-			<h3>Most Popular Subreddits:</h3>
+
+				    	<div class="panel panel-default">
+  			<div class="panel-heading">
+				<h3 class="panel-title">Most Popular Subreddits:</h3>
+			</div>
+			<div class="panel-body">
 			<ol>
 				{% for subreddit in topSubreddits %}
-					<li style="width:100px;"><a href="https://www.reddit.com/r/{{ subreddit }}"><h4>{{ subreddit }}</h4></a></li>
+					<li style="width:100px;"><a href="https://www.reddit.com/r/{{ subreddit }}">{{ subreddit }}</a></li>
 				{% endfor %}
 			</ol>
+
 			</div>
+		</div>
 		{% endif %}
 	</div>
 
 	{% if topWords %}
-	    <div>
-	    	<h3>Most used words in upvoted posts:</h3>
+	    <div class="col-md-3">
+
+				    	<div class="panel panel-default">
+  			<div class="panel-heading">
+				<h3 class="panel-title">Most used words in upvoted posts:</h3>
+			</div>
+			<div class="panel-body">
+
+	    	<h5></h5>
 	    	<ol>
 	    	{% for word, score in topWords %}
-				<li style="width:100px;"><h4>{{ word }}</h4></li>
+				<li style="width:100px;">{{ word }}</li>
 			{% endfor %}
 			</ol>
 	    </div>
+	</div>
+</div>
+</div>
 	{% endif %}
 
 
