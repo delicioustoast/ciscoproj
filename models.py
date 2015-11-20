@@ -62,7 +62,7 @@ Updates word_dict based on words in word_list, excluding any words in the blackl
 def note_words(word_list, word_dict, blacklist):
     for word in word_list:
         processed_word = re.sub(ur"[^\w\d'\s]+",'',word).lower()
-        if processed_word not in blacklist:
+        if processed_word not in blacklist and processed_word != "":
             word_dict[processed_word] += 1
 
 """
